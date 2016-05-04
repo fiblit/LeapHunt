@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.VR;
 using VRStandardAssets.Utils;
+using Leap;
 
 namespace VRStandardAssets.ShootingGallery
 {
@@ -24,6 +25,8 @@ namespace VRStandardAssets.ShootingGallery
         [SerializeField] private Reticle m_Reticle;                                     // This is what the gun arm should be aiming at.
         [SerializeField] private ParticleSystem m_FlareParticles;                       // This particle system plays when the gun fires.
         [SerializeField] private GameObject[] m_FlareMeshes;                            // These are meshes of which one is randomly activated when the gun fires.
+
+		[SerializeField] private Hand leap_hand;     			                        // These are meshes of which one is randomly activated when the gun fires.
 
 
         private const float k_DampingCoef = -20f;                                       // This is the coefficient used to ensure smooth damping of this gameobject.
