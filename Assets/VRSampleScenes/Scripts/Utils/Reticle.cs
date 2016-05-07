@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Leap.Unity;
 
 namespace VRStandardAssets.Utils
 {
@@ -14,6 +15,9 @@ namespace VRStandardAssets.Utils
         [SerializeField] private Image m_Image;                     // Reference to the image component that represents the reticle.
         [SerializeField] private Transform m_ReticleTransform;      // We need to affect the reticle's transform.
         [SerializeField] private Transform m_Camera;                // The reticle is always placed relative to the camera.
+
+		//[SerializeField] private HandModel leap_model;
+		[SerializeField] private Transform m_boneTransform;
 
 
         private Vector3 m_OriginalScale;                            // Since the scale of the reticle changes, the original scale needs to be stored.
@@ -54,8 +58,8 @@ namespace VRStandardAssets.Utils
         public void SetPosition ()
         {
             // Set the position of the reticle to the default distance in front of the camera.
-            m_ReticleTransform.position = m_Camera.position + m_Camera.forward * m_DefaultDistance;
-
+            //m_ReticleTransform.position = m_Camera.position + m_Camera.forward * m_DefaultDistance;
+			m_ReticleTransform.position = m_boneTransform.position + m_boneTransform.forward * m_DefaultDistance;
             // Set the scale based on the original and the distance from the camera.
             m_ReticleTransform.localScale = m_OriginalScale * m_DefaultDistance;
 

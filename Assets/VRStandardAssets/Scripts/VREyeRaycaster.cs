@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Leap.Unity;
 
 namespace VRStandardAssets.Utils
 {
@@ -21,7 +22,8 @@ namespace VRStandardAssets.Utils
         [SerializeField] private float m_DebugRayDuration = 1f;         // How long the Debug ray will remain visible.
         [SerializeField] private float m_RayLength = 500f;              // How far into the scene the ray is cast.
 
-        
+		[SerializeField] private HandModel leap_model;
+
         private VRInteractiveItem m_CurrentInteractible;                //The current interactive item
         private VRInteractiveItem m_LastInteractible;                   //The last interactive item
 
@@ -59,15 +61,27 @@ namespace VRStandardAssets.Utils
       
         private void EyeRaycast()
         {
-            // Show the debug ray if required
+			// Show the debug ray if required
             if (m_ShowDebugRay)
             {
                 Debug.DrawRay(m_Camera.position, m_Camera.forward * m_DebugRayLength, Color.blue, m_DebugRayDuration);
             }
 
+
             // Create a ray that points forwards from the camera.
-            Ray ray = new Ray(m_Camera.position, m_Camera.forward);
-            RaycastHit hit;
+			//Ray ray = leap_model.GetTipPosition();
+			//leap_
+			//Ray ray2 = new Ray(m_Camera.position, m_Camera.forward);
+			Vector3 scalar = new Vector3(0f, 0f, .1f);
+			Vector3 boneDirection = leap_model.fingers[1].GetRay().direction;
+			boneDirection.Scale(scalar);
+			Vector3 eyeToFinger = (leap_model.fingers[1].GetTipPosition() + scalar ) - m_Camera.position;
+			eyeToFinger.Normalize();
+			Ray ray = new Ray(m_Camera.position, eyeToFinger); 
+			//leap_model.
+			//Ray ray = new Ray( leap_model.GetPalmPosition(), leap_model.GetPalmNormal());
+			//Ray ray = leap_model.fingers[1].GetRay();
+			RaycastHit hit;
             
             // Do the raycast forweards to see if we hit an interactive item
             if (Physics.Raycast(ray, out hit, m_RayLength, ~m_ExclusionLayers))

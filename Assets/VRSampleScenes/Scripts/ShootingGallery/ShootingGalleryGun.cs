@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.VR;
 using VRStandardAssets.Utils;
 using Leap;
+using Leap.Unity;
+
 
 namespace VRStandardAssets.ShootingGallery
 {
@@ -26,7 +28,8 @@ namespace VRStandardAssets.ShootingGallery
         [SerializeField] private ParticleSystem m_FlareParticles;                       // This particle system plays when the gun fires.
         [SerializeField] private GameObject[] m_FlareMeshes;                            // These are meshes of which one is randomly activated when the gun fires.
 
-		[SerializeField] private Hand leap_hand;     			                        // These are meshes of which one is randomly activated when the gun fires.
+		[SerializeField] private Hand leap_hand;
+		[SerializeField] private HandModel leap_model;
 
 
         private const float k_DampingCoef = -20f;                                       // This is the coefficient used to ensure smooth damping of this gameobject.
@@ -52,12 +55,18 @@ namespace VRStandardAssets.ShootingGallery
 
         private void Update()
         {
-            // Smoothly interpolate this gameobject's rotation towards that of the user/camera.
-            transform.rotation = Quaternion.Slerp(transform.rotation, InputTracking.GetLocalRotation(VRNode.Head),
-                m_Damping * (1 - Mathf.Exp(k_DampingCoef * Time.deltaTime)));
+			// Smoothly interpolate this gameobject's rotation towards that of the user/camera.
+			transform.rotation = Quaternion.Slerp(transform.rotation, InputTracking.GetLocalRotation(VRNode.Head), m_Damping * (1 - Mathf.Exp(k_DampingCoef * Time.deltaTime)));
+
+
+			// Attempt to inject arm rotation for camera rotation.
+			//Rotation(leap_hand.Arm.Basis); leap_model.GetArmRotation
+			//Quaternion handRotation = leap_model.GetArmRotation();
+			//transform.rotation = Quaternion.Slerp(transform.rotation, handRotation, m_Damping * (1 - Mathf.Exp(k_DampingCoef * Time.deltaTime)));
             
             // Move this gameobject to the camera.
             transform.position = m_CameraTransform.position;
+			//transform.position = leap_model.();
 
             // Find a rotation for the gun to be pointed at the reticle.
             Quaternion lookAtRotation = Quaternion.LookRotation (m_Reticle.ReticleTransform.position - m_GunContainer.position);
@@ -136,7 +145,7 @@ namespace VRStandardAssets.ShootingGallery
             {
                 // ... set the line renderer to start at the gun and finish forward of the gun the determined distance.
                 m_GunFlare.SetPosition(0, m_GunEnd.position);
-                m_GunFlare.SetPosition(1, m_GunEnd.position + m_GunEnd.forward * lineLength);
+				m_GunFlare.SetPosition(1, m_GunEnd.position + m_GunEnd.forward * lineLength);
 
                 // Wait for the next frame.
                 yield return null;
