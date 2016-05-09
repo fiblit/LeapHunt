@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Leap.Unity.PinchUtility;
 
 namespace VRStandardAssets.Utils
 {
@@ -39,6 +40,8 @@ namespace VRStandardAssets.Utils
         private float m_LastVerticalValue;                          // The previous value of the vertical axis used to detect keyboard swipes.
 
 
+		[SerializeField] private LeapPinchDetector[] pinchDetectors;
+
         public float DoubleClickTime{ get { return m_DoubleClickTime; } }
 
 
@@ -52,6 +55,13 @@ namespace VRStandardAssets.Utils
         {
             // Set the default swipe to be none.
             SwipeDirection swipe = SwipeDirection.NONE;
+			for (int i = 0; i < pinchDetectors.Length; i++) {
+				var detector = pinchDetectors [i]; 
+				if (detector.DidStartPinch) {
+					if (OnDown != null)
+						OnDown ();
+				}
+			}
 
             if (Input.GetButtonDown("Fire1"))
             {

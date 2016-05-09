@@ -42,7 +42,7 @@ InputManager:
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
-    positiveButton: left ctrl
+    positiveButton: space
     altNegativeButton: 
     altPositiveButton: mouse 0
     gravity: 1000
@@ -58,7 +58,7 @@ InputManager:
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
-    positiveButton: left alt
+    positiveButton: left ctrl
     altNegativeButton: 
     altPositiveButton: mouse 1
     gravity: 1000
@@ -422,66 +422,18 @@ InputManager:
     axis: 11
     joyNum: 0
   - serializedVersion: 3
-    m_Name: Oculus_GearVR_RIndexTrigger
+    m_Name: Shooting_Mode_Scroll
     descriptiveName: 
     descriptiveNegativeName: 
-    negativeButton: 
-    positiveButton: 
-    altNegativeButton: 
-    altPositiveButton: 
-    gravity: 0
+    negativeButton: a
+    positiveButton: d
+    altNegativeButton: s
+    altPositiveButton: w
+    gravity: 1000
     dead: 0.001
-    sensitivity: 1
+    sensitivity: 1000
     snap: 0
     invert: 0
-    type: 2
-    axis: 11
-    joyNum: 0
-  - serializedVersion: 3
-    m_Name: Fire1
-    descriptiveName: 
-    descriptiveNegativeName: 
-    negativeButton: 
-    positiveButton: 
-    altNegativeButton: 
-    altPositiveButton: 
-    gravity: 0
-    dead: 0.001
-    sensitivity: 1
-    snap: 0
-    invert: 0
-    type: 2
-    axis: 11
-    joyNum: 0
-  - serializedVersion: 3
-    m_Name: Oculus_GearVR_RIndexTrigger
-    descriptiveName: 
-    descriptiveNegativeName: 
-    negativeButton: 
-    positiveButton: 
-    altNegativeButton: 
-    altPositiveButton: 
-    gravity: 0
-    dead: 0.001
-    sensitivity: 1
-    snap: 0
-    invert: 0
-    type: 2
-    axis: 11
-    joyNum: 0
-  - serializedVersion: 3
-    m_Name: Oculus_GearVR_RIndexTrigger
-    descriptiveName: 
-    descriptiveNegativeName: 
-    negativeButton: 
-    positiveButton: 
-    altNegativeButton: 
-    altPositiveButton: 
-    gravity: 0
-    dead: 0.001
-    sensitivity: 1
-    snap: 0
-    invert: 0
-    type: 2
-    axis: 11
+    type: 0
+    axis: 0
     joyNum: 0

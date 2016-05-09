@@ -13,10 +13,9 @@ namespace VRStandardAssets.Utils
         [SerializeField] private Transform m_Camera;            // The transform of the camera.
         [SerializeField] private bool m_RotateWithCamera;       // Whether the UI should rotate with the camera so it is always in front.
         [SerializeField] private float m_FollowSpeed = 10f;     // The speed with which the UI should follow the camera.
-
+		[SerializeField] private Transform HandPosition;     
 
         private float m_DistanceFromCamera;                     // The distance the UI should stay from the camera when rotating with it.
-
 
         private void Start ()
         {
@@ -27,9 +26,15 @@ namespace VRStandardAssets.Utils
 
         private void Update()
         {
+			
             // If the UI should look at the camera set it's rotation to point from the UI to the camera.
-            if(m_LookatCamera)
-                m_UIElement.rotation = Quaternion.LookRotation(m_UIElement.position - m_Camera.position);
+			if(m_LookatCamera) {
+				// Move the UI down and to the left.
+				Vector3 offset = new Vector3( -0.1f, -0.1f, 0f);
+				m_UIElement.rotation = Quaternion.LookRotation(m_UIElement.position - m_Camera.position);
+				// Make UI follow hand position instead of gun
+				m_UIElement.position = HandPosition.position + offset;
+			}
 
             // If the UI should rotate with the camera...
             if (m_RotateWithCamera)

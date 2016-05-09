@@ -144,8 +144,15 @@ namespace VRStandardAssets.ShootingGallery
             while (timer < m_GunFlareVisibleSeconds)
             {
                 // ... set the line renderer to start at the gun and finish forward of the gun the determined distance.
-                m_GunFlare.SetPosition(0, m_GunEnd.position);
-				m_GunFlare.SetPosition(1, m_GunEnd.position + m_GunEnd.forward * lineLength);
+				//Vector3 finger = leap_model.fingers[0].GetTipPosition();
+				m_GunEnd.position = leap_model.fingers[0].GetTipPosition();
+                //m_GunFlare.SetPosition(0, m_GunEnd.position);
+				m_GunFlare.SetPosition(0, m_GunEnd.position);
+				//m_GunFlare.SetPosition(1, m_GunEnd.position + m_GunEnd.forward * lineLength);
+				Vector3 scalar = new Vector3(0f, .1f, 0f);
+				Vector3 eyeToFinger = (leap_model.fingers[0].GetTipPosition() + scalar ) - m_CameraTransform.position;
+				eyeToFinger.Normalize();
+				m_GunFlare.SetPosition (1, m_GunEnd.position + eyeToFinger * lineLength);
 
                 // Wait for the next frame.
                 yield return null;

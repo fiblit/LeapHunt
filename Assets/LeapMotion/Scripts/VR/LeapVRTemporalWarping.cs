@@ -185,7 +185,7 @@ namespace Leap.Unity{
       //Get a callback right as rendering begins for this frame so we can update the history and warping.
       LeapVRCameraControl.OnValidCameraParams += onValidCameraParams;
   
-      deviceInfo = provider.GetDeviceInfo();
+       deviceInfo = provider.GetDeviceInfo();
       if (deviceInfo.type == LeapDeviceType.Invalid) {
         Debug.LogWarning("Invalid Leap Device -> enabled = false");
         enabled = false;

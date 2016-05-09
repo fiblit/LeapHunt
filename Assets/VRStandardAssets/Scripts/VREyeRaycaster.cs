@@ -41,7 +41,7 @@ namespace VRStandardAssets.Utils
             m_VrInput.OnDoubleClick += HandleDoubleClick;
             m_VrInput.OnUp += HandleUp;
             m_VrInput.OnDown += HandleDown;
-        }
+        }          
 
 
         private void OnDisable ()
@@ -72,10 +72,13 @@ namespace VRStandardAssets.Utils
 			//Ray ray = leap_model.GetTipPosition();
 			//leap_
 			//Ray ray2 = new Ray(m_Camera.position, m_Camera.forward);
-			Vector3 scalar = new Vector3(0f, 0f, .1f);
-			Vector3 boneDirection = leap_model.fingers[1].GetRay().direction;
-			boneDirection.Scale(scalar);
-			Vector3 eyeToFinger = (leap_model.fingers[1].GetTipPosition() + scalar ) - m_Camera.position;
+			Vector3 scalar = new Vector3(0f, .1f, 0f);
+			//Vector3 avg = new Vector3(.5f, .5f, .5f);
+			//Vector3 boneDirection = leap_model.fingers[0].GetRay().direction;
+			//boneDirection.Scale(scalar);
+			//Vector3 fingAvg = ( + leap_model.fingers[1].GetTipPosition().Scale(avg));
+			//fingAvg.Scale(avg);
+			Vector3 eyeToFinger = (leap_model.fingers[0].GetTipPosition() + scalar ) - m_Camera.position;
 			eyeToFinger.Normalize();
 			Ray ray = new Ray(m_Camera.position, eyeToFinger); 
 			//leap_model.
