@@ -145,8 +145,8 @@ namespace VRStandardAssets.ShootingGallery
             // The amount of time before the next spawn is the full interval.
             float spawnTimer = m_SpawnInterval;
 
-            // While there is still time remaining...
-            while (gameTimer > 0f)
+            // While we have not lost and there is still time remaining...
+            while (SessionData.Death < 5 && gameTimer > 0f)
             {
                 // ... check if the timer for spawning has reached zero.
                 if (spawnTimer <= 0f)
@@ -186,6 +186,12 @@ namespace VRStandardAssets.ShootingGallery
             // Set the target's position to a random position. 
             target.transform.position = SpawnPosition();
 
+            var tRb = target.GetComponent<Rigidbody>();
+            //tRb.drag = 0; //This isn't fixing the spinning targets problem... hm.
+            tRb.isKinematic = false; /* if false, Physics will work on the rigidbody */
+            tRb.useGravity = false; /* if false, gravity will not work on this rigidBody */
+            tRb.velocity = SpawnVelocity(target.transform.position);
+
             // Find a reference to the ShootingTarget script on the target gameobject and call it's Restart function.
             ShootingTarget shootingTarget = target.GetComponent<ShootingTarget>();
             shootingTarget.Restart(timeRemaining);
@@ -194,6 +200,21 @@ namespace VRStandardAssets.ShootingGallery
             shootingTarget.OnRemove += HandleTargetRemoved;
         }
 
+        private Vector3 SpawnVelocity(Vector3 pos)
+        {
+            if (m_GameType == SessionData.GameType.SHOOTER180)
+            {
+                float zDistance = pos.z - m_Camera.transform.position.z;
+                float scale = Random.Range(1f, 3f); //should not be 0
+                bool isRogue = Random.Range(0, 100) < 10;
+                float rogueScale = Random.Range(5f, 6f);
+                float scaleToDistance = 11;//cannot be 0
+                //the following mapping looks a lot like sqrt(zDistance), but it is capped at whatever the scale is
+                float zSpeed = (isRogue ? rogueScale : scale) * zDistance / scaleToDistance * Mathf.Atan2(scaleToDistance, zDistance);
+                return new Vector3(0, 0, -zSpeed);
+            }
+            return new Vector3(0, 0, 0);
+        }
 
         private Vector3 SpawnPosition ()
         {

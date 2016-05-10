@@ -22,11 +22,13 @@ namespace VRStandardAssets.Common
 
         private static int s_HighScore;                             // Used to store the highscore for the current game type.
         private static int s_Score;                                 // Used to store the current game's score.
+        private static int s_Death;                                 // Used to store the amount of missed targets
         private static string s_CurrentGame;                        // The name of the current game type.
 
 
         public static int HighScore { get { return s_HighScore; } }
         public static int Score { get { return s_Score; } }
+        public static int Death { get { return s_Death; } }
 
 
         public static void SetGameType(GameType gameType)
@@ -60,6 +62,8 @@ namespace VRStandardAssets.Common
             // Reset the current score and get the highscore from player prefs.
             s_Score = 0;
             s_HighScore = GetHighScore();
+
+            s_Death = 0;
         }
 
 
@@ -70,6 +74,10 @@ namespace VRStandardAssets.Common
             CheckHighScore();
         }
 
+        public static void AddDeath(int death)
+        {
+            s_Death += death;
+        }
 
         public static int GetHighScore()
         {

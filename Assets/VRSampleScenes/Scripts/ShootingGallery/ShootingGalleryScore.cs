@@ -9,11 +9,12 @@ namespace VRStandardAssets.ShootingGallery
     public class ShootingGalleryScore : MonoBehaviour
     {
         [SerializeField] private Text m_ScoreText;
-
+        [SerializeField] private Text m_DeathText;
 
         private void Update()
         {
             m_ScoreText.text = SessionData.Score.ToString();
+            m_DeathText.text = SessionData.Death.ToString();
         }
     }
 }

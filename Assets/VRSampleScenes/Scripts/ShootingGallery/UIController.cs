@@ -17,7 +17,7 @@ namespace VRStandardAssets.ShootingGallery
         [SerializeField] private UIFader m_PlayerUI;    // This controls fading the UI that shows around the gun that moves with the player.
         [SerializeField] private Text m_TotalScore;     // Reference to the Text component that displays the player's score at the end.
         [SerializeField] private Text m_HighScore;      // Reference to the Text component that displays the high score at the end.
-
+        [SerializeField] private Text m_TitleText;      // Reference to the Text component that displays the 
 
         public IEnumerator ShowIntroUI()
         {
@@ -33,6 +33,7 @@ namespace VRStandardAssets.ShootingGallery
 
         public IEnumerator ShowOutroUI()
         {
+            m_TitleText.text = (SessionData.Death < 5 ? "You Won!" : "You Lost!");
             m_TotalScore.text = SessionData.Score.ToString();
             m_HighScore.text = SessionData.HighScore.ToString();
 

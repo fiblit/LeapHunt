@@ -15,7 +15,7 @@ namespace VRStandardAssets.ShootingGallery
 
 
         [SerializeField] private int m_Score = 1;                       // This is the amount added to the users score when the target is hit.
-        [SerializeField] private float m_TimeOutDuration = 2f;          // How long the target lasts before it disappears.
+        [SerializeField] private float m_TimeOutDuration = 15f;//2f;    // How long the target lasts before it disappears.
         [SerializeField] private float m_DestroyTimeOutDuration = 2f;   // When the target is hit, it shatters.  This is how long before the shattered pieces disappear.
         [SerializeField] private GameObject m_DestroyPrefab;            // The prefab for the shattered target.
         [SerializeField] private AudioClip m_DestroyClip;               // The audio clip to play when the target shatters.
@@ -59,9 +59,9 @@ namespace VRStandardAssets.ShootingGallery
             // Ensure the event is completely unsubscribed when the target is destroyed.
             OnRemove = null;
         }
-        
 
-        public void Restart (float gameTimeRemaining)
+
+        public void Restart(float gameTimeRemaining)
         {
             // When the target is spawned turn the visual and physical aspects on.
             m_Renderer.enabled = true;
@@ -69,7 +69,7 @@ namespace VRStandardAssets.ShootingGallery
 
             // Since the target has just spawned, it's not ending yet.
             m_IsEnding = false;
-            
+
             // Play the spawn clip.
             m_Audio.clip = m_SpawnClip;
             m_Audio.Play();
@@ -77,22 +77,27 @@ namespace VRStandardAssets.ShootingGallery
             // Make sure the target is facing the camera.
             transform.LookAt(m_CameraTransform);
 
+            // Detect for missing
+            StartCoroutine(MissTarget());
+
             // Start the time out for when the target would naturally despawn.
-            StartCoroutine (MissTarget());
+            //StartCoroutine(TimeOutTarget());
 
             // Start the time out for when the game ends.
             // Note this will only come into effect if the game time remaining is less than the time out duration.
-            StartCoroutine (GameOver (gameTimeRemaining));
+            StartCoroutine(GameOver(gameTimeRemaining));
+
+            //Player misses more than 5 targets
+            StartCoroutine(Lose());
         }
-        
 
         private IEnumerator MissTarget()
         {
-            // Wait for the target to disappear naturally.
-            yield return new WaitForSeconds (m_TimeOutDuration);
+            //Wait until it goes beyond player
+            yield return new WaitUntil( () => this.transform.position.z < -2f );//-2 should be 2 meters behind the player.
 
-            // If by this point it's already ending, do nothing else.
-            if(m_IsEnding)
+            //If by this point it's already ending, do nothing else.
+            if (m_IsEnding)
                 yield break;
 
             // Otherwise this is ending the target's lifetime.
@@ -101,10 +106,13 @@ namespace VRStandardAssets.ShootingGallery
             // Turn off the visual and physical aspects.
             m_Renderer.enabled = false;
             m_Collider.enabled = false;
-            
+
             // Play the clip of the target being missed.
             m_Audio.clip = m_MissedClip;
             m_Audio.Play();
+
+            //DEATH! YOU MISSED ONE! YOU FOOL!
+            SessionData.AddDeath(1);
 
             // Wait for the clip to finish.
             yield return new WaitForSeconds(m_MissedClip.length);
@@ -114,6 +122,55 @@ namespace VRStandardAssets.ShootingGallery
                 OnRemove(this);
         }
 
+        private IEnumerator TimeOutTarget() /* was MissTarget, I renamed it */
+        {
+            // Wait for the target to disappear naturally.
+            yield return new WaitForSeconds(15f);//(m_TimeOutDuration); /* I have no idea why m_TimeOutDuration keeps being set to 3.0f */
+            
+            //If by this point it's already ending, do nothing else.
+            if(m_IsEnding)
+                yield break;
+
+            // Otherwise this is ending the target's lifetime.
+            m_IsEnding = true;
+
+            // Turn off the visual and physical aspects.
+            m_Renderer.enabled = false;
+            m_Collider.enabled = false;
+
+            // Tell subscribers that this target is ready to be removed.
+            if (OnRemove != null)
+                OnRemove(this);
+        }
+
+        private IEnumerator Lose ()
+        {
+            //wait for losing
+            yield return new WaitUntil(() => SessionData.Death >= 5);
+
+            // If by this point it's already ending, do nothing else.
+            if (m_IsEnding)
+                yield break;
+
+            // Otherwise this is ending the target's lifetime.
+            m_IsEnding = true;
+
+            // Turn off the visual and physical aspects.
+            m_Renderer.enabled = false;
+            m_Collider.enabled = false;
+
+            // Instantiate the shattered target prefab in place of this target.
+            GameObject destroyedTarget = Instantiate(m_DestroyPrefab, transform.position, transform.rotation) as GameObject;
+
+            // Destroy the shattered target after it's time out duration.
+            float destroyTimeout = m_DestroyTimeOutDuration + UnityEngine.Random.Range(-1f, 1f);
+            Destroy(destroyedTarget, destroyTimeout);
+
+            // Tell subscribers that this target is ready to be removed.
+            if (OnRemove != null)
+                OnRemove(this);
+
+        }
 
         private IEnumerator GameOver (float gameTimeRemaining)
         {
@@ -130,6 +187,13 @@ namespace VRStandardAssets.ShootingGallery
             // Turn off the visual and physical aspects.
             m_Renderer.enabled = false;
             m_Collider.enabled = false;
+
+            // Instantiate the shattered target prefab in place of this target.
+            GameObject destroyedTarget = Instantiate(m_DestroyPrefab, transform.position, transform.rotation) as GameObject;
+
+            // Destroy the shattered target after it's time out duration.
+            float destroyTimeout = m_DestroyTimeOutDuration + UnityEngine.Random.Range(-1f, 1f);
+            Destroy(destroyedTarget, destroyTimeout);
 
             // Tell subscribers that this target is ready to be removed.
             if (OnRemove != null)
@@ -161,7 +225,8 @@ namespace VRStandardAssets.ShootingGallery
             GameObject destroyedTarget = Instantiate(m_DestroyPrefab, transform.position, transform.rotation) as GameObject;
 
             // Destroy the shattered target after it's time out duration.
-            Destroy(destroyedTarget, m_DestroyTimeOutDuration);
+            float destroyTimeout = m_DestroyTimeOutDuration + UnityEngine.Random.Range(-1f, 1f);
+            Destroy(destroyedTarget, destroyTimeout);
 
             // Tell subscribers that this target is ready to be removed.
             if (OnRemove != null)
